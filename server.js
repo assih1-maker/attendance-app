@@ -84,6 +84,23 @@ app.post('/api/attendance/submit', async (req, res) => {
   }
 });
 
+app.delete('/api/attendance/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await db.query('DELETE FROM attendance WHERE id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Enregistrement introuvable' });
+    }
+
+    res.json({ message: 'Présence supprimée avec succès' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
